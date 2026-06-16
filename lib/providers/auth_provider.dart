@@ -18,9 +18,9 @@ final authServiceProvider = Provider<AuthService>((ref) {
   return AuthService(apiService, storageService);
 });
 
-final locationServiceProvider = Provider<LocationService>((ref) {
-  return LocationService();
-});
+// final locationServiceProvider = Provider<LocationService>((ref) {
+//   return LocationService();
+// });
 
 // Auth State
 enum AuthStatus { initial, authenticated, unauthenticated, guest }

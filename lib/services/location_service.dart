@@ -20,7 +20,7 @@ class LocationService {
 
     LocationPermission permission = await Geolocator.checkPermission();
     debugPrint('LocationService: Current permission status: $permission');
-    
+
     if (permission == LocationPermission.denied) {
       debugPrint('LocationService: Requesting permission...');
       permission = await Geolocator.requestPermission();
@@ -52,7 +52,9 @@ class LocationService {
       _currentPosition = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
       );
-      debugPrint('LocationService: Got position - lat: ${_currentPosition!.latitude}, lng: ${_currentPosition!.longitude}');
+      debugPrint(
+        'LocationService: Got position - lat: ${_currentPosition!.latitude}, lng: ${_currentPosition!.longitude}',
+      );
       return _currentPosition;
     } catch (e) {
       debugPrint('LocationService: Error getting position: $e');
@@ -68,17 +70,18 @@ class LocationService {
     if (!hasPermission) return;
 
     _positionSubscription?.cancel();
-    _positionSubscription = Geolocator.getPositionStream(
-      locationSettings: LocationSettings(
-        accuracy: LocationAccuracy.high,
-        distanceFilter: 10,
-        timeLimit: interval,
-      ),
-    ).listen((Position position) {
-      _currentPosition = position;
-      _positionController.add(position);
-      onPositionUpdate?.call(position);
-    });
+    _positionSubscription =
+        Geolocator.getPositionStream(
+          locationSettings: LocationSettings(
+            accuracy: LocationAccuracy.high,
+            distanceFilter: 10,
+            timeLimit: interval,
+          ),
+        ).listen((Position position) {
+          _currentPosition = position;
+          _positionController.add(position);
+          onPositionUpdate?.call(position);
+        });
   }
 
   void stopBackgroundTracking() {
@@ -86,9 +89,15 @@ class LocationService {
     _positionSubscription = null;
   }
 
-  Future<String?> getAddressFromCoordinates(double latitude, double longitude) async {
+  Future<String?> getAddressFromCoordinates(
+    double latitude,
+    double longitude,
+  ) async {
     try {
-      List<Placemark> placemarks = await placemarkFromCoordinates(latitude, longitude);
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        latitude,
+        longitude,
+      );
       if (placemarks.isEmpty) return null;
 
       Placemark place = placemarks.first;
